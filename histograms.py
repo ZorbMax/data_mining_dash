@@ -65,7 +65,17 @@ histogramTab = dcc.Tab(label='Histograms', children=[
         value=0,
         id='histogram-radio-item'
     ),
+    dcc.Dropdown(
+        id='anomalie_hist',
+        options=[
+            {'label': 'Train engine anomaly', 'value': 'failed_engine'},
+            {'label': 'Water/Oil cooling anomaly', 'value': 'wo'},
+            {'label': 'No anomaly', 'value': 'nothing'}
+        ],
+        value='nothing'
+    ),
     dcc.Graph(figure={}, id='histogram-graph'),
+    dcc.Graph(figure={}, id='histogram-graph-2'),
 ])
 
 
@@ -75,3 +85,23 @@ histogramTab = dcc.Tab(label='Histograms', children=[
 )
 def update_graph(col_chosen):
     return hist_attributes[col_chosen].figure
+    
+@callback(
+    Output(component_id='histogram-graph-2', component_property='figure'),
+    Input(component_id='histogram-radio-item', component_property='value'),
+    Input(component_id='anomalie_hist', component_property='value')
+)
+def update_graph(col_chosen, anomalie):
+	dff = hist_data[hist_data['Anomalie_type'] == anomalie]
+	hist_attributsdsd = [
+	MultiAttribute("Air Temperature", dff["RS_E_InAirTemp_PC1"], dff["RS_E_InAirTemp_PC2"]),
+	MultiAttribute("Water Temperature", dff["RS_E_WatTemp_PC1"], dff["RS_E_WatTemp_PC2"]),
+	MultiAttribute("Oil Temperature", dff["RS_T_OilTemp_PC1"], dff["RS_T_OilTemp_PC2"]),
+	MultiAttribute("Oil Pressure", dff["RS_E_OilPress_PC1"], dff["RS_E_OilPress_PC2"]),
+	MultiAttribute("RPM", dff["RS_E_RPM_PC1"], dff["RS_E_RPM_PC2"]),
+	# MultiAttribute("Air Temperature diff",  hist_data["Air_temp_diff"]),
+	# MultiAttribute("Water Temperature diff",  hist_data["Water_temp_diff"]),
+	# MultiAttribute("Oil Temperature diff",  hist_data["Oil_temp_diff"]),
+	# MultiAttribute("Oil Pressure diff",  hist_data["Oil_press_diff"]),
+	]
+	return hist_attributsdsd[col_chosen].figure
