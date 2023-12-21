@@ -3,8 +3,9 @@ import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 
-
-df = pd.read_csv('h.csv', delimiter=";")
+from loader import maps_data
+# df = pd.read_csv('h.csv', delimiter=";")
+df = maps_data
 
 
 mapsTab = dcc.Tab(label='Maps', children=[

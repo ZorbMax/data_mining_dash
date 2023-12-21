@@ -7,6 +7,9 @@ import plotly.express as px
 import plotly.graph_objs as go
 
 
+from loader import hist_data
+
+
 class MultiAttribute:
     def __init__(self, name, *attributes):
         self.name = name
@@ -41,15 +44,6 @@ class MultiAttribute:
             yaxis=dict(title='Frequency')
         )
 
-
-# file_path = "C:/Users/sezne/Downloads/ar41_cleaned.csv"
-# file_path = "C:/Users/sezne/Downloads/ar41_for_ulb.csv"
-# file_path = "C:/Users/sezne/Downloads/ar41_sample_10k.csv"
-# file_path = "C:/Users/sezne/Downloads/ar41_sample_200k.csv"
-# file_path = "C:/Users/sezne/Downloads/ar41_for_ulb_mini.csv"
-file_path = "h.csv"  # TODO : full file ?
-# file_path = "C:/Users/sezne/Downloads/ar41_diff.csv"
-hist_data = pd.read_csv(file_path, sep=';')
 
 hist_attributes = [
     MultiAttribute("Air Temperature", hist_data["RS_E_InAirTemp_PC1"], hist_data["RS_E_InAirTemp_PC2"]),
