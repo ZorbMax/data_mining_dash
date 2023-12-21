@@ -37,6 +37,11 @@ plotterTab = dcc.Tab(label='Plotter', children=[
         options=plotter_attributes,
         value=plotter_attributes[1]
     ),
+    dcc.Dropdown(
+        id='anomalie',
+        options=['failed_engine', 'wo', 'nothing'],
+        value='nothing'
+    ),
     dcc.Graph(figure={}, id='plotter-graph'),
 ])
 
@@ -45,8 +50,9 @@ plotterTab = dcc.Tab(label='Plotter', children=[
     Output(component_id='plotter-graph', component_property='figure'),
     Input(component_id='plotter-x-dropdown', component_property='value'),
     Input(component_id='plotter-y-dropdown', component_property='value'),
+    Input(component_id='anomalie', component_property='value'),
 )
-def update_graph(x_value, y_value):
-    df = pd.DataFrame({x_value: plotter_data[x_value], y_value: plotter_data[y_value]})
-    return px.scatter(df, x=x_value, y=y_value, title='Scatter Plot')
-
+def update_graph(x_value, y_value, anomalie):
+	dff = hist_data[hist_data['Anomalie_type'] == anomalie]
+	df = pd.DataFrame({x_value: dff[x_value], y_value: dff[y_value]})
+	return px.scatter(df, x=x_value, y=y_value, title='Scatter Plot')
