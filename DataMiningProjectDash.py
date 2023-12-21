@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 
-df = pd.read_csv('h.csv', delimiter=";")
+df = pd.read_csv('anomaly_table_v2.csv', delimiter=";")
 
 app = Dash(__name__)
 app.layout = html.Div([

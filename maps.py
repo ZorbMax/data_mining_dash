@@ -12,28 +12,20 @@ mapsTab = dcc.Tab(label='Maps', children=[
     html.H1(children="DashBoard"),
     # Dropdown to select elements
     dcc.Dropdown(
-        id='element-dropdown',
-        options=['failed_engine', 'wo', 'nothing'],
+        id='map_anomaly',
+        options=[
+            {'label': 'Train engine anomaly', 'value': 'failed_engine'},
+            {'label': 'Water/Oil cooling anomaly', 'value': 'wo'},
+            {'label': 'No anomaly', 'value': 'nothing'}
+        ],
         value='nothing'
     ),
-    # Plotly graph
-    dcc.Graph(id='graph-content'),
     dcc.Graph(id='map', style={'width': '90vh', 'height': '90vh'})
 ])
 
-
-@callback(
-    Output('graph-content', 'figure'),
-    Input('element-dropdown', 'value')
-)
-def update_graph(value):
-    dff = df[df['Anomalie_type']==value]
-    return px.line(dff, x='lat', y='lon')
-
-
 @callback(
     Output('map', 'figure'),
-    Input('element-dropdown', 'value')
+    Input('map_anomaly', 'value')
 )
 def update_graph(value):
     dff = df[df['Anomalie_type']==value]

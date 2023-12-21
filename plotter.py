@@ -6,9 +6,7 @@ from dash import Dash, html, dash_table, dcc, callback, Output, Input
 import plotly.express as px
 import plotly.graph_objs as go
 
-
 from loader import hist_data
-
 
 plotter_attributes = [
     "RS_E_InAirTemp_PC1",
@@ -25,7 +23,6 @@ plotter_attributes = [
 
 plotter_data = {attribute: hist_data[attribute] for attribute in plotter_attributes}
 
-
 plotterTab = dcc.Tab(label='Plotter', children=[
     dcc.Dropdown(
         id='plotter-x-dropdown',
@@ -38,8 +35,12 @@ plotterTab = dcc.Tab(label='Plotter', children=[
         value=plotter_attributes[1]
     ),
     dcc.Dropdown(
-        id='anomalie',
-        options=['failed_engine', 'wo', 'nothing'],
+        id='plotter_anomaly',
+        options=[
+            {'label': 'Train engine anomaly', 'value': 'failed_engine'},
+            {'label': 'Water/Oil cooling anomaly', 'value': 'wo'},
+            {'label': 'No anomaly', 'value': 'nothing'}
+        ],
         value='nothing'
     ),
     dcc.Graph(figure={}, id='plotter-graph'),
@@ -50,9 +51,9 @@ plotterTab = dcc.Tab(label='Plotter', children=[
     Output(component_id='plotter-graph', component_property='figure'),
     Input(component_id='plotter-x-dropdown', component_property='value'),
     Input(component_id='plotter-y-dropdown', component_property='value'),
-    Input(component_id='anomalie', component_property='value'),
+    Input(component_id='plotter_anomaly', component_property='value'),
 )
 def update_graph(x_value, y_value, anomalie):
-	dff = hist_data[hist_data['Anomalie_type'] == anomalie]
-	df = pd.DataFrame({x_value: dff[x_value], y_value: dff[y_value]})
-	return px.scatter(df, x=x_value, y=y_value, title='Scatter Plot')
+    dff = hist_data[hist_data['Anomalie_type'] == anomalie]
+    df = pd.DataFrame({x_value: dff[x_value], y_value: dff[y_value]})
+    return px.scatter(df, x=x_value, y=y_value, title='Scatter Plot')
