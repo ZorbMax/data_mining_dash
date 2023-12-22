@@ -6,7 +6,6 @@ from dash import Dash, html, dash_table, dcc, callback, Output, Input
 import plotly.express as px
 import plotly.graph_objs as go
 
-
 from loader import hist_data
 
 
@@ -45,12 +44,17 @@ class MultiAttribute:
         )
 
 
+dff = hist_data[hist_data['Anomalie_type'] == "nothing"]
+
 hist_attributes = [
-    MultiAttribute("Air Temperature", hist_data["RS_E_InAirTemp_PC1"], hist_data["RS_E_InAirTemp_PC2"]),
-    MultiAttribute("Water Temperature", hist_data["RS_E_WatTemp_PC1"], hist_data["RS_E_WatTemp_PC2"]),
-    MultiAttribute("Oil Temperature", hist_data["RS_T_OilTemp_PC1"], hist_data["RS_T_OilTemp_PC2"]),
-    MultiAttribute("Oil Pressure", hist_data["RS_E_OilPress_PC1"], hist_data["RS_E_OilPress_PC2"]),
-    MultiAttribute("RPM", hist_data["RS_E_RPM_PC1"], hist_data["RS_E_RPM_PC2"]),
+    MultiAttribute("Air Temperature", dff["RS_E_InAirTemp_PC1"], dff["RS_E_InAirTemp_PC2"]),
+    MultiAttribute("Water Temperature", dff["RS_E_WatTemp_PC1"], dff["RS_E_WatTemp_PC2"]),
+    MultiAttribute("Oil Temperature", dff["RS_T_OilTemp_PC1"], dff["RS_T_OilTemp_PC2"]),
+    MultiAttribute("Oil Pressure", dff["RS_E_OilPress_PC1"], dff["RS_E_OilPress_PC2"]),
+    MultiAttribute("RPM", dff["RS_E_RPM_PC1"], dff["RS_E_RPM_PC2"]),
+    MultiAttribute("Weather Temperature", dff["temp"]),
+    MultiAttribute("Rain", dff["precip"]),
+    MultiAttribute("Humidity", dff["humidity"]),
     # MultiAttribute("Air Temperature diff",  hist_data["Air_temp_diff"]),
     # MultiAttribute("Water Temperature diff",  hist_data["Water_temp_diff"]),
     # MultiAttribute("Oil Temperature diff",  hist_data["Oil_temp_diff"]),
@@ -85,23 +89,27 @@ histogramTab = dcc.Tab(label='Histograms', children=[
 )
 def update_graph(col_chosen):
     return hist_attributes[col_chosen].figure
-    
+
+
 @callback(
     Output(component_id='histogram-graph-2', component_property='figure'),
     Input(component_id='histogram-radio-item', component_property='value'),
     Input(component_id='anomalie_hist', component_property='value')
 )
 def update_graph(col_chosen, anomalie):
-	dff = hist_data[hist_data['Anomalie_type'] == anomalie]
-	hist_attributsdsd = [
-	MultiAttribute("Air Temperature", dff["RS_E_InAirTemp_PC1"], dff["RS_E_InAirTemp_PC2"]),
-	MultiAttribute("Water Temperature", dff["RS_E_WatTemp_PC1"], dff["RS_E_WatTemp_PC2"]),
-	MultiAttribute("Oil Temperature", dff["RS_T_OilTemp_PC1"], dff["RS_T_OilTemp_PC2"]),
-	MultiAttribute("Oil Pressure", dff["RS_E_OilPress_PC1"], dff["RS_E_OilPress_PC2"]),
-	MultiAttribute("RPM", dff["RS_E_RPM_PC1"], dff["RS_E_RPM_PC2"]),
-	# MultiAttribute("Air Temperature diff",  hist_data["Air_temp_diff"]),
-	# MultiAttribute("Water Temperature diff",  hist_data["Water_temp_diff"]),
-	# MultiAttribute("Oil Temperature diff",  hist_data["Oil_temp_diff"]),
-	# MultiAttribute("Oil Pressure diff",  hist_data["Oil_press_diff"]),
-	]
-	return hist_attributsdsd[col_chosen].figure
+    dff = hist_data[hist_data['Anomalie_type'] == anomalie]
+    hist_attributsdsd = [
+        MultiAttribute("Air Temperature", dff["RS_E_InAirTemp_PC1"], dff["RS_E_InAirTemp_PC2"]),
+        MultiAttribute("Water Temperature", dff["RS_E_WatTemp_PC1"], dff["RS_E_WatTemp_PC2"]),
+        MultiAttribute("Oil Temperature", dff["RS_T_OilTemp_PC1"], dff["RS_T_OilTemp_PC2"]),
+        MultiAttribute("Oil Pressure", dff["RS_E_OilPress_PC1"], dff["RS_E_OilPress_PC2"]),
+        MultiAttribute("RPM", dff["RS_E_RPM_PC1"], dff["RS_E_RPM_PC2"]),
+        MultiAttribute("Weather Temperature", dff["temp"]),
+        MultiAttribute("Rain", dff["precip"]),
+        MultiAttribute("Humidity", dff["humidity"]),
+        # MultiAttribute("Air Temperature diff",  hist_data["Air_temp_diff"]),
+        # MultiAttribute("Water Temperature diff",  hist_data["Water_temp_diff"]),
+        # MultiAttribute("Oil Temperature diff",  hist_data["Oil_temp_diff"]),
+        # MultiAttribute("Oil Pressure diff",  hist_data["Oil_press_diff"]),
+    ]
+    return hist_attributsdsd[col_chosen].figure
